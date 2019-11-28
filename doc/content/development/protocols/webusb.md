@@ -67,7 +67,7 @@ The following control pipe request is used to get the response APDU.
 
 The device will send the response no more than 1500 bytes.
 
-### 3. Sample Code
+### 3. Demo Code
 
 ```js
 function byteToHexString(uint8arr) {
@@ -138,4 +138,51 @@ async function tranceive(device, capdu) {
 }
 ```
 
-To open a WebUSB device, please see [WebUSB Device Enumeration](https://wicg.github.io/webusb/#enumeration).
+If you have CanoKey, you can try it now.
+
+#### 3.1 Connect
+
+Click the following button to connect a CanoKey.
+
+<button id="connect" class="btn btn-default">Connect</button>
+<span id="device-info"></span>
+
+<script>
+let button = document.getElementById('connect');
+let info = document.getElementById('device-info');
+button.addEventListener('click', async () => {
+  let device;
+  try {
+    device = await navigator.usb.requestDevice({ filters: [{
+        classCode: 0xFF, // vendor-specific
+    }]});
+  } catch (err) {
+      info.innerText = 'No device selected';
+  }
+
+  if (device !== undefined) {
+      info.innerText = 'A CanoKey is selected';
+  }
+});
+</script>
+
+{{%expand "Show me the code"%}}
+```js
+let button = document.getElementById('connect');
+let info = document.getElementById('device-info');
+button.addEventListener('click', async () => {
+  let device;
+  try {
+    device = await navigator.usb.requestDevice({ filters: [{
+        classCode: 0xFF, // vendor-specific
+    }]});
+  } catch (err) {
+      info.innerText = 'No device selected';
+  }
+
+  if (device !== undefined) {
+      info.innerText = 'A CanoKey is selected';
+  }
+});
+```
+{{% /expand%}}
