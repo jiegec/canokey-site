@@ -1,0 +1,4 @@
+baseURL = "http://canokeys.com/doc/"
+languageCode = "en-us"
+title = "CanoKey Documentation"
+theme = "learn"
