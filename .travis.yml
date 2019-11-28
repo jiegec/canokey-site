@@ -16,5 +16,6 @@ deploy:
   github_token: $GITHUB_TOKEN
   local_dir: deploy
   repo: canokeys/canokeys.github.io
+  target_branch: master
   on:
     branch: master
