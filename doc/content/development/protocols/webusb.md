@@ -69,75 +69,6 @@ The device will send the response no more than 1500 bytes.
 
 ### 3. Demo Code
 
-```js
-function byteToHexString(uint8arr) {
-    if (!uint8arr) return '';
-    var hexStr = '';
-    for (var i = 0; i < uint8arr.length; i++) {
-        var hex = (uint8arr[i] & 0xff).toString(16);
-        hex = (hex.length === 1) ? '0' + hex : hex;
-        hexStr += hex;
-    }
-    return hexStr.toUpperCase();
-}
-
-function hexStringToByte(str) {
-    if (!str) return new Uint8Array();
-    var a = [];
-    for (var i = 0, len = str.length; i < len; i += 2)
-        a.push(parseInt(str.substr(i, 2), 16));
-    return new Uint8Array(a);
-}
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function reshape(data) {
-    const packets = [];
-    for (let i = 0; i < data.length; i += 16)
-        packets.push(data.slice(i, i + 16));
-    return packets;
-}
-
-async function tranceive(device, capdu) {
-    let data = hexStringToByte(capdu);
-    let reshapedData = reshape(data);   // divide command into 16-byte chunks
-    // send a command
-    for (let i = 0; i < reshapedData.length; ++i)
-        await device.controlTransferOut({
-            requestType: 'vendor',
-            recipient: 'interface',
-            request: 0,
-            value: (i == 0 ? 0x4000 : 0x8000) + i,
-            index: 1
-        }, reshapedData[i]);
-    // execute
-    let resp = await device.controlTransferIn({
-        requestType: 'vendor',
-        recipient: 'interface',
-        request: 1,
-        value: 0,
-        index: 1
-    }, 0);
-    // get the response
-    while (1) {
-        resp = await device.controlTransferIn({
-            requestType: 'vendor',
-            recipient: 'interface',
-            request: 2,
-            value: 0,
-            index: 1
-        }, 1500);
-        if (resp.data.byteLength > 0) break;
-        await sleep(100);
-    }
-    if (resp.status === "ok")
-        return byteToHexString(new Uint8Array(resp.data.buffer));
-    return '';
-}
-```
-
 If you have CanoKey, you can try it now.
 
 #### 3.1 Connect
@@ -147,42 +78,207 @@ Click the following button to connect a CanoKey.
 <button id="connect" class="btn btn-default">Connect</button>
 <span id="device-info"></span>
 
-<script>
-let button = document.getElementById('connect');
-let info = document.getElementById('device-info');
-button.addEventListener('click', async () => {
-  let device;
-  try {
-    device = await navigator.usb.requestDevice({ filters: [{
-        classCode: 0xFF, // vendor-specific
-    }]});
-  } catch (err) {
-      info.innerText = 'No device selected';
-  }
-
-  if (device !== undefined) {
-      info.innerText = 'A CanoKey is selected';
-  }
-});
-</script>
-
 {{%expand "Show me the code"%}}
 ```js
-let button = document.getElementById('connect');
+let connect = document.getElementById('connect');
 let info = document.getElementById('device-info');
-button.addEventListener('click', async () => {
+connect.addEventListener('click', async () => {
   let device;
   try {
     device = await navigator.usb.requestDevice({ filters: [{
-        classCode: 0xFF, // vendor-specific
+      classCode: 0xFF, // vendor-specific
     }]});
   } catch (err) {
-      info.innerText = 'No device selected';
+    info.innerText = 'No device selected';
   }
 
   if (device !== undefined) {
-      info.innerText = 'A CanoKey is selected';
+    await device.open();
+    await device.claimInterface(1);
+    info.innerText = 'A CanoKey is selected';
   }
 });
 ```
 {{% /expand%}}
+
+#### 3.2 Transceive
+
+Once you connect your CanoKey, input the command APDU here, e.g., `00A4040005F000000000`, then click "Send".
+
+<style>
+input[disabled] {
+color: rgb(84, 84, 84);
+background-color: rgb(235, 235, 228);
+}
+</style>
+<input class="form-element-input" type="text" id="capdu" placeholder="Command APDU" disabled>
+<button id="send" class="btn btn-default">Send</button>
+<p id="rapdu">Response: </p>
+
+{{%expand "Show me the code"%}}
+```js
+function byteToHexString(uint8arr) {
+  if (!uint8arr) return '';
+  var hexStr = '';
+  for (var i = 0; i < uint8arr.length; i++) {
+    var hex = (uint8arr[i] & 0xff).toString(16);
+    hex = (hex.length === 1) ? '0' + hex : hex;
+    hexStr += hex;
+  }
+  return hexStr.toUpperCase();
+}
+
+function hexStringToByte(str) {
+  if (!str) return new Uint8Array();
+  var a = [];
+  for (var i = 0, len = str.length; i < len; i += 2)
+    a.push(parseInt(str.substr(i, 2), 16));
+  return new Uint8Array(a);
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function reshape(data) {
+  const packets = [];
+  for (let i = 0; i < data.length; i += 16)
+    packets.push(data.slice(i, i + 16));
+  return packets;
+}
+
+async function transceive(device, capdu) {
+  let data = hexStringToByte(capdu);
+  let reshapedData = reshape(data);   // divide command into 16-byte chunks
+  // send a command
+  for (let i = 0; i < reshapedData.length; ++i)
+    await device.controlTransferOut({
+      requestType: 'vendor',
+      recipient: 'interface',
+      request: 0,
+      value: (i == 0 ? 0x4000 : 0x8000) + i,
+      index: 1
+    }, reshapedData[i]);
+  // execute
+  let resp = await device.controlTransferIn({
+    requestType: 'vendor',
+    recipient: 'interface',
+    request: 1,
+    value: 0,
+    index: 1
+  }, 0);
+  // get the response
+  while (1) {
+    resp = await device.controlTransferIn({
+      requestType: 'vendor',
+      recipient: 'interface',
+      request: 2,
+      value: 0,
+      index: 1
+    }, 1500);
+    if (resp.data.byteLength > 0) break;
+    await sleep(100);
+  }
+  if (resp.status === "ok")
+    return byteToHexString(new Uint8Array(resp.data.buffer));
+  return '';
+}
+```
+{{% /expand%}}
+
+<script>
+let connect = document.getElementById('connect');
+let capdu = document.getElementById('capdu');
+let send = document.getElementById('send');
+let rapdu = document.getElementById('rapdu');
+let info = document.getElementById('device-info');
+
+function byteToHexString(uint8arr) {
+  if (!uint8arr) return '';
+  var hexStr = '';
+  for (var i = 0; i < uint8arr.length; i++) {
+    var hex = (uint8arr[i] & 0xff).toString(16);
+    hex = (hex.length === 1) ? '0' + hex : hex;
+    hexStr += hex;
+  }
+  return hexStr.toUpperCase();
+}
+
+function hexStringToByte(str) {
+  if (!str) return new Uint8Array();
+  var a = [];
+  for (var i = 0, len = str.length; i < len; i += 2)
+    a.push(parseInt(str.substr(i, 2), 16));
+  return new Uint8Array(a);
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function reshape(data) {
+  const packets = [];
+  for (let i = 0; i < data.length; i += 16)
+    packets.push(data.slice(i, i + 16));
+  return packets;
+}
+
+async function transceive(device, capdu) {
+  let data = hexStringToByte(capdu);
+  let reshapedData = reshape(data);   // divide command into 16-byte chunks
+  // send a command
+  for (let i = 0; i < reshapedData.length; ++i)
+    await device.controlTransferOut({
+      requestType: 'vendor',
+      recipient: 'interface',
+      request: 0,
+      value: (i == 0 ? 0x4000 : 0x8000) + i,
+      index: 1
+    }, reshapedData[i]);
+  // execute
+  let resp = await device.controlTransferIn({
+    requestType: 'vendor',
+    recipient: 'interface',
+    request: 1,
+    value: 0,
+    index: 1
+  }, 0);
+  // get the response
+  while (1) {
+    resp = await device.controlTransferIn({
+      requestType: 'vendor',
+      recipient: 'interface',
+      request: 2,
+      value: 0,
+      index: 1
+    }, 1500);
+    if (resp.data.byteLength > 0) break;
+    await sleep(100);
+  }
+  if (resp.status === "ok")
+    return byteToHexString(new Uint8Array(resp.data.buffer));
+  return '';
+}
+
+connect.addEventListener('click', async () => {
+  let device;
+  try {
+    device = await navigator.usb.requestDevice({ filters: [{
+        classCode: 0xFF, // vendor-specific
+    }]});
+  } catch (err) {
+    info.innerText = 'No device selected';
+  }
+
+  if (device !== undefined) {
+    info.innerText = 'A CanoKey is selected';
+    capdu.disabled = false;
+    await device.open();
+    await device.claimInterface(1);
+    send.addEventListener('click', async () => {
+      let resp = await transceive(device, capdu.value);
+      rapdu.innerText = 'Response: ' + resp;
+    });
+  }
+});
+</script>
