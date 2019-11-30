@@ -5,12 +5,22 @@ date: 2019-11-28T10:18:22-05:00
 
 CanoKey supports the following protocols:
 
+- U2F / FIDO2
 - OpenPGP Smart Card 3.4
 - PIV (NIST SP 800-73-4)
 - OATH
 - WebUSB
 
 Besides, CanoKey also provides an additional admin applet to manage the key.
+
+#### U2F / FIDO2
+
+The implementations are following [CTAP](https://fidoalliance.org/specs/fido-v2.0-ps-20190130/fido-client-to-authenticator-protocol-v2.0-ps-20190130.html) and [U2F](https://fidoalliance.org/specs/fido-u2f-v1.0-ps-20141009/fido-u2f-hid-protocol-ps-20141009.html) specifications.
+
+Supported features:
+
+- Up to 64 resident keys
+- The HMAC extension
 
 #### OpenPGP Smart Card 3.4
 
