@@ -1,7 +1,7 @@
 ---
 title: "Admin Applet"
 date: 2019-11-28T10:18:29-05:00
-weight: 20
+weight: 30
 ---
 
 To manage your CanoKey, you can use the admin applet to

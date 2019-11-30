@@ -10,6 +10,8 @@ CanoKey supports the following protocols:
 - OATH
 - WebUSB
 
+Besides, CanoKey also provides an additional admin applet to manage the key.
+
 #### OpenPGP Smart Card 3.4
 
 CanoKey implements all the mandatory features of the [specification](https://gnupg.org/ftp/specs/OpenPGP-smart-card-application-3.4.pdf). Besides, the following optional features are also implemented:
@@ -41,7 +43,11 @@ The following features are not supported:
 
 #### OATH
 
-TBD
+Please refer to the [OATH documentation](oath/).
+
+#### Admin Applet
+
+Please refer to the [Admin Applet documentation](admin/).
 
 #### WebUSB
 
