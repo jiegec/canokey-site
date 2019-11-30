@@ -49,9 +49,11 @@ Selects the application for use.
 
 #### Response
 
-Empty
+| SW   | Description |
+| ---- | ----------- |
+| 9000 | Success     |
 
-### 2. Verify PIN
+### 3. Verify PIN
 
 Verify the PIN of this admin applet. The default PIN is `123456` (in string) or `31 32 33 34 35 36` (in hex).
 
@@ -82,7 +84,7 @@ The max retries is 3. When you exceed this limit, the applet will be locked. A s
 | 63CX | Verification failed, X retries left |
 | 6983 | Applet is blocked |
 
-### 3. Change PIN
+### 4. Change PIN
 
 After a successful verification, you can use this command to change your PIN **directly**. The length of the PIN should be between 6 and 64.
 
@@ -103,3 +105,117 @@ After a successful verification, you can use this command to change your PIN **d
 | ---- | ----------- |
 | 9000 | Success     |
 | 6700 | Incorrect length |
+
+### 5. Write FIDO Key
+
+The private key is shared by U2F and FIDO2, which is used to sign the attestation data in the registration phase. You can mannually write it using this command. The private key should be a secp256r1 (NIST P-256) key.
+
+{{% notice note %}}
+When the private key is updated, the certification should be also updated accordingly.
+{{% /notice %}}
+
+{{% notice warning %}}
+Once you write a new private key, your old 2FA credentials (U2F/FIDO2) will be **invalid**.
+{{% /notice %}}
+
+#### Request
+
+| Field | Value |
+| ----- | ----- |
+| CLA   | 00h   |
+| INS   | 01h   |
+| P1    | 00h   |
+| P2    | 00h   |
+| Lc    | Length of the key (20h) |
+| Data  | Private key |
+
+#### Response
+
+| SW   | Description |
+| ---- | ----------- |
+| 9000 | Success     |
+| 6700 | Incorrect length |
+
+### 6. Write FIDO Certification
+
+The FIDO certification is a X.509 der format certificate corresponding to your private key. Use an **extended command APDU** to set it.
+
+{{% notice note %}}
+The maximum length of the cerfication is 1152 bytes.
+{{% /notice %}}
+
+#### Request
+
+| Field | Value |
+| ----- | ----- |
+| CLA   | 00h   |
+| INS   | 02h   |
+| P1    | 00h   |
+| P2    | 00h   |
+| Lc    | Length of the certification (2 bytes) |
+| Data  | The certification |
+
+#### Response
+
+| SW   | Description |
+| ---- | ----------- |
+| 9000 | Success     |
+| 6700 | Incorrect length |
+
+### 7. Reset OpenPGP / PIV / OATH
+
+Executing these commands will reset the corresponding applets.
+
+| Instruction Code | Applet  |
+| ---------------- | ------- |
+| 03h              | OpenPGP |
+| 04h              | PIV     |
+| 05h              | OATH    |
+
+#### Request
+
+| Field | Value |
+| ----- | ----- |
+| CLA   | 00h   |
+| INS   | 03h / 04h / 05h |
+| P1    | 00h   |
+| P2    | 00h   |
+| Lc    | Length of the certification (2 bytes) |
+| Data  | The certification |
+
+#### Response
+
+| SW   | Description |
+| ---- | ----------- |
+| 9000 | Success     |
+
+### 8. Write SN
+
+The SN can be only set **once**. Due to the limitation of OpenPGP card spec, the serial number is 4-byte long.
+
+{{% notice note %}}
+If you build your own CanoKey, you should use this command to write the SN. Otherwise, the SN has been already set.
+{{% /notice %}}
+
+#### Request
+
+| Field | Value |
+| ----- | ----- |
+| CLA   | 00h   |
+| INS   | 30h   |
+| P1    | 00h   |
+| P2    | 00h   |
+| Lc    | Length of the SN (4) |
+| Data  | SN    |
+
+#### Response
+
+| SW   | Description |
+| ---- | ----------- |
+| 9000 | Success     |
+| 6700 | Incorrect length |
+| 6985 | SN has been set |
+
+### 9. Vendor specific
+
+This command is reserved for development use and invalid in a release version.
