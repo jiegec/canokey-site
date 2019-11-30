@@ -67,6 +67,10 @@ The following control pipe request is used to get the response APDU.
 
 The device will send the response no more than 1500 bytes.
 
+{{% notice note %}}
+If the command is still under processing, the response will be empty.
+{{% /notice %}}
+
 ### 3. Demo Code
 
 If you have CanoKey, you can try it now.
