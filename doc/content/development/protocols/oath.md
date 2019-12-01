@@ -97,3 +97,162 @@ Data is encoded in TLV-format.
 | ---- | ----------- |
 | 9000 | Success     |
 
+### 4. Delete
+
+Deletes an existing credential.
+
+#### Request
+
+| Field | Value |
+| ----- | ----- |
+| CLA   | 00h   |
+| INS   | 02h   |
+| P1    | 00h   |
+| P2    | 00h   |
+| Lc    | Length of data |
+| Data  | See below      |
+
+##### Data
+
+Data is encoded in TLV-format.
+
+| Tag | Length                       | Value |
+| --- | ---------------------------- | ----- |
+| 71h | Length of name, max 64 bytes | Name  |
+
+#### Response
+
+| SW   | Description    |
+| ---- | -------------- |
+| 9000 | Success        |
+| 6984 | No such object |
+
+### 5. List
+
+Lists configured credentials.
+
+#### Request
+
+| Field | Value |
+| ----- | ----- |
+| CLA   | 00h   |
+| INS   | 03h   |
+| P1    | 00h   |
+| P2    | 00h   |
+
+##### Response Data
+
+Response will be a continual list of objects looking like:
+
+| Tag | Length             | Value |
+| --- | ------------------ | ----- |
+| 72h | Length of name + 1 | Byte 1: High 4 bits is type, low 4 bits is algorithm <br> Rest: Name |
+
+#### Response Code
+
+| SW   | Description    |
+| ---- | -------------- |
+| 9000 | Success        |
+| 61xx | More data available |
+
+### 6. Calculate
+
+Calculates one named credential.
+
+#### Request
+
+| Field | Value |
+| ----- | ----- |
+| CLA   | 00h   |
+| INS   | 04h   |
+| P1    | 00h   |
+| P2    | 00h   |
+| Lc    | Length of data |
+| Data  | See below      |
+
+##### Data
+
+Data is encoded in TLV-format.
+
+| Tag | Length                       | Value      |
+| --- | ---------------------------- | ---------- |
+| 71h | Length of name, max 64 bytes | Name       |
+| 74h | Length of challenge          | Challenge  |
+
+##### Response Data
+
+Data is encoded in TLV-format.
+
+| Tag | Length                 | Value |
+| --- | ---------------------- | ----- |
+| 76h | Length of response + 1 | Byte 1: Number of digits in the OATH code <br> Rest: Response |
+
+#### Response Code
+
+| SW   | Description    |
+| ---- | -------------- |
+| 9000 | Success        |
+| 6984 | No such object |
+
+### 7. Calculate All
+
+Performs CALCULATE for all available credentials, returns name + response for TOTP and just name for HOTP and credentials requiring touch.
+
+#### Request
+
+| Field | Value |
+| ----- | ----- |
+| CLA   | 00h   |
+| INS   | 05h   |
+| P1    | 00h   |
+| P2    | 00h   |
+| Lc    | Length of data |
+| Data  | See below      |
+
+##### Data
+
+Data is encoded in TLV-format.
+
+| Tag | Length                       | Value      |
+| --- | ---------------------------- | ---------- |
+| 74h | Length of challenge          | Challenge  |
+
+##### Response Data
+
+Data is encoded in TLV-format.
+
+| Tag | Length                 | Value |
+| --- | ---------------------- | ----- |
+| 71h | Length of name         | Name  |
+| 77h for HOTP, 7Ch for touch, 76h for response | Length of response + 1 | Byte 1: Number of digits in the OATH code <br> Rest: Response |
+
+#### Response Code
+
+| SW   | Description    |
+| ---- | -------------- |
+| 9000 | Success        |
+| 61xx | More data available |
+
+### 8. Send Remaining
+
+Gets remaining data if everything didn’t fit in previous response (response code was 61xx).
+
+#### Request
+
+| Field | Value |
+| ----- | ----- |
+| CLA   | 00h   |
+| INS   | 06h   |
+| P1    | 00h   |
+| P2    | 00h   |
+
+##### Response Data
+
+Continued data where previous command left off.
+
+#### Response Code
+
+| SW   | Description    |
+| ---- | -------------- |
+| 9000 | Success        |
+| 61xx | More data available |
