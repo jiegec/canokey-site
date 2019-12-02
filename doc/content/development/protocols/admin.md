@@ -65,6 +65,8 @@ PINs are independent between Admin / OpenPGP / PIV applets.
 The max retries is 3. When you exceed this limit, the applet will be locked. A successful verification will reset this limit.
 {{% /notice %}}
 
+If the input is empty (Lc = 0), the actual access status of the PIN is returned. If the PIN is verified, the applet answers with normal status bytes (SW = 9000). If the PIN is not checked and the verification is required, the applet answers with the status bytes 63CX, where 'X' encodes the number of further allowed retries.
+
 #### Request
 
 | Field | Value |
@@ -73,7 +75,7 @@ The max retries is 3. When you exceed this limit, the applet will be locked. A s
 | INS   | 20h   |
 | P1    | 00h   |
 | P2    | 00h   |
-| Lc    | Length of PIN |
+| Lc    | Length of PIN or 0 |
 | Data  | PIN |
 
 #### Response
