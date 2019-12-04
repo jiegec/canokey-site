@@ -31,6 +31,7 @@ Each type of message is a vendor-specific request, defined as:
 | CMD      | 00h   |
 | EXEC     | 01h   |
 | RESP     | 02h   |
+| STAT     | 03h   |
 
 #### 2.1 Command APDU
 
@@ -67,6 +68,16 @@ The following control pipe request is used to get the response APDU.
 | 11000001B     | RESP     | 0000h  | 1      | 0       | N/A  |
 
 The device will send the response no more than 1500 bytes.
+
+#### 2.4 Get the execution status
+
+The following control pipe request is used to get the response APDU.
+
+| bmRequestType | bRequest | wValue | wIndex | wLength | Data |
+| ------------- | -------- | ------ | ------ | ------- | ---- |
+| 11000001B     | STAT     | 0000h  | 1      | 0       | N/A  |
+
+The response data is 1-byte long, 1 for in progress and 0 for finish.
 
 {{% notice note %}}
 If the command is still under processing, the response will be empty.
@@ -172,18 +183,26 @@ async function transceive(device, capdu) {
     value: 0,
     index: 1
   }, 0);
-  // get the response
+  // wait for execution
   while (1) {
     resp = await device.controlTransferIn({
       requestType: 'vendor',
       recipient: 'interface',
-      request: 2,
+      request: 3,
       value: 0,
       index: 1
-    }, 1500);
-    if (resp.data.byteLength > 0) break;
+    }, 1);
+    if (resp.data.buffer[0] === 1) break;
     await sleep(100);
   }
+  // get the response
+  resp = await device.controlTransferIn({
+    requestType: 'vendor',
+    recipient: 'interface',
+    request: 2,
+    value: 0,
+    index: 1
+  }, 1500);
   if (resp.status === "ok")
     return byteToHexString(new Uint8Array(resp.data.buffer));
   return '';
@@ -248,18 +267,26 @@ async function transceive(device, capdu) {
     value: 0,
     index: 1
   }, 0);
-  // get the response
+  // wait for execution
   while (1) {
     resp = await device.controlTransferIn({
       requestType: 'vendor',
       recipient: 'interface',
-      request: 2,
+      request: 3,
       value: 0,
       index: 1
-    }, 1500);
-    if (resp.data.byteLength > 0) break;
+    }, 1);
+    if (resp.data.buffer[0] === 1) break;
     await sleep(100);
   }
+  // get the response
+  resp = await device.controlTransferIn({
+    requestType: 'vendor',
+    recipient: 'interface',
+    request: 2,
+    value: 0,
+    index: 1
+  }, 1500);
   if (resp.status === "ok")
     return byteToHexString(new Uint8Array(resp.data.buffer));
   return '';
