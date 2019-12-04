@@ -1,0 +1,91 @@
+baseURL = "/"
+languageCode = "en-us"
+title = "CanoKeys"
+theme = "timer"
+
+# We Used Ionicons Icon font for Icon, for more details check this link - https://ionicons.com/
+
+# Site Menus
+[menu]
+    # Navbar Menus
+    # [[menu.nav]]
+    #     name    = "About"
+    #     url     = "about"
+    #     weight  = 2
+    # [[menu.nav]]
+    #     name    = "Service"
+    #     url     = "service"
+    #     weight  = 3
+    # [[menu.nav]]
+    #     name    = "Gallery"
+    #     url     = "gallery"
+    #     weight  = 4
+    # [[menu.nav]]
+    #     name    = "Blog"
+    #     url     = "blog"
+    #     weight  = 5
+    # [[menu.nav]]
+    #     name    = "Contact"
+    #     url     = "contact"
+    #     weight  = 6
+
+# Site Params
+[params]
+    home = "Home"
+    logo = "images/logo.png"
+    dateFormat = "January 6, 2006"
+    # Meta data
+    description = "CanoKeys"
+    author = "Canopo"
+    # Google Analitycs
+    googleAnalitycsID = "Your ID"
+
+    # Banner Section
+    [params.banner]
+        enable  = true
+        bgImage = "images/slider.jpg"
+        heading = "PROTECT YOUR IDENTITY AND DATA WITH"
+        description = "Use the most advanced WebAuthn and other technologies to protect your accounts. Online and offline."
+        btn     = false
+        [[params.banner.flipText]]
+            title   = "WebAuthn"
+        [[params.banner.flipText]]
+            title   = "OpenPGP"
+        [[params.banner.flipText]]
+            title   = "PIV"
+        [[params.banner.flipText]]
+            title   = "OTP"
+
+    # Homepage About Section
+    [params.about]
+        enable  = true
+        title   = "FEATURES & SPECIFICATIONS"
+        content = "<strong>WebAuthn</strong><br>64 resident keys and unlimited normal keys<br>HMAC extension<br><strong>OpenPGP</strong><br>OpenPGP Smart Card 3.4 Compatible<br>RSA 2048 / NIST P256 / ED25519 / Curve25519<br><strong>PIV</strong><br>NIST SP 800-73-4 Compatible<br>RSA 2048 / NIST P256<br><strong>OTP</strong><br>HOTP / TOTP with SHA1 / SHA2-256"
+        image   = "images/about/about.jpg"
+
+    # Call to Action
+    [params.cta]
+        enable  = true
+        title   = "SO WHAT YOU THINK ?"
+        content = "Read the documentation to know the details."
+        btnText = "Documentation"
+        btnURL  = "/doc"
+
+    # Portfolio Section On Homepage
+    [params.portfolio]
+        enable  = false
+        title   = "Latest Works"
+        subtitle= "Aliquam lobortis. Maecenas vestibulum mollis diam. Pellentesque auctor neque nec urna. Nulla sit amet est. Aenean posuere tortor sed cursus feugiat, nunc augue blandit nunc, eu sollicitudin urna dolor sagittis lacus."
+
+    [params.footer]
+        [[params.footer.socialIcon]]
+            icon = "ion-social-facebook"
+            url = "#"
+
+        [[params.footer.socialIcon]]
+            icon = "ion-social-instagram"
+            url = "#"
+
+        [[params.footer.socialIcon]]
+            icon = "ion-social-linkedin"
+            url = "#"

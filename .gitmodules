@@ -1,3 +1,6 @@
 [submodule "doc/themes/learn"]
 	path = doc/themes/learn
 	url = https://github.com/matcornic/hugo-theme-learn.git
+[submodule "main/themes/timer"]
+	path = main/themes/timer
+	url = https://github.com/themefisher/timer-hugo.git

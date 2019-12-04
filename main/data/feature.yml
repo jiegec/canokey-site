@@ -1,0 +1,19 @@
+enable  : true
+title   : Secure Your Applications
+subtitle: >
+  Use WebAuthn and TOTP for secure login. Use OpenPGP and PIV for signing, encryption, and authentication.
+item    :
+  - icon  : ion-ios-flask-outline
+    title : Secure
+    description : >
+      WebAuthn is the most advanced secure login protocol. Use it with Google, Facebook, Microsoft, and more.
+
+  - icon  : ion-ios-lightbulb-outline
+    title : Easy
+    description : >
+      Login, insert, and touch. That's all you need.
+
+  - icon  : ion-ios-americanfootball-outline
+    title : Open Source
+    description : >
+      The entire hardware and firmware are open-sourced. You can even build one by yourself.

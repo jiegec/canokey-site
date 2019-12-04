@@ -10,6 +10,10 @@ script:
   - cd ..
   - cp -fr doc/public deploy
   - mv deploy/public deploy/doc
+  - cd main
+  - hugo
+  - cd ..
+  - cp -fr main/public/* deploy
 deploy:
   provider: pages
   skip_cleanup: true
