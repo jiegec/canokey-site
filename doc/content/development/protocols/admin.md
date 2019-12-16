@@ -29,6 +29,7 @@ Instructions marked as Require PIN require a successful Verify PIN command to be
 | Verify PIN      | 20h  | N           |
 | Change PIN      | 21h  | Y           |
 | Write SN        | 30h  | Y           |
+| Config          | 40h  | Y           |
 | Select          | A4h  | N           |
 | Vendor Specific | FFh  | Y           |
 
@@ -218,6 +219,30 @@ If you build your own CanoKey, you should use this command to write the SN. Othe
 | 6700 | Incorrect length |
 | 6985 | SN has been set |
 
-### 9. Vendor specific
+### 9. Config
+
+Configure the USB interfaces and the LED status:
+
+- The LED can be configured ON or OFF when not blinking. **The default value is ON.**
+- The OpenPGP can be set to an independent USB interface, since the PGP agent opens the interface exclusively by default. However, using the independent OpenPGP interface may cause other CCID-based programs not able to find the reader. **The default value is OFF.**
+- The keyboard interface can be enabled to input the HOTP by simply touching the key. **The default value is OFF.**
+
+#### Request
+
+| Field | Value |
+| ----- | ----- |
+| CLA   | 00h   |
+| INS   | 30h   |
+| P1    | 01h: LED; 02h: OpenPGP; 03h: Keyboard |
+| P2    | 00h: Off, 01h: On |
+
+#### Response
+
+| SW   | Description |
+| ---- | ----------- |
+| 9000 | Success     |
+| 6985 | Cannot enable GPG & Keyboard both |
+
+### 10. Vendor specific
 
 This command is reserved for development use and invalid in a release version.
