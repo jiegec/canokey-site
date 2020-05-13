@@ -192,7 +192,7 @@ async function transceive(device, capdu) {
       value: 0,
       index: 1
     }, 1);
-    if (resp.data.buffer[0] === 1) break;
+    if (resp.data.buffer[0] === 0) break;
     await sleep(100);
   }
   // get the response
@@ -276,7 +276,7 @@ async function transceive(device, capdu) {
       value: 0,
       index: 1
     }, 1);
-    if (resp.data.buffer[0] === 1) break;
+    if (resp.data.buffer[0] === 0) break;
     await sleep(100);
   }
   // get the response
