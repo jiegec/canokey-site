@@ -22,6 +22,7 @@ The AID of the admin applet is `A0000005272101`.
 | CALCULATE      | 04h  |
 | CALCULATE ALL  | 05h  |
 | SEND REMAINING | 06h  |
+| SET DEFAULT    | 55h  |
 | SELECT         | A4h  |
 
 #### Algorithms
@@ -256,3 +257,33 @@ Continued data where previous command left off.
 | ---- | -------------- |
 | 9000 | Success        |
 | 61xx | More data available |
+
+### 9. Set Default
+
+Set an OATH credentail as default.
+
+#### Request
+
+| Field | Value |
+| ----- | ----- |
+| CLA   | 00h   |
+| INS   | 55h   |
+| P1    | 00h   |
+| P2    | 00h   |
+| Lc    | Length of data |
+| Data  | See below      |
+
+##### Data
+
+Data is encoded in TLV-format.
+
+| Tag | Length                       | Value |
+| --- | ---------------------------- | ----- |
+| 71h | Length of name, max 64 bytes | Name  |
+
+#### Response
+
+| SW   | Description    |
+| ---- | -------------- |
+| 9000 | Success        |
+| 6984 | No such object |
