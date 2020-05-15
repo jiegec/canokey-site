@@ -139,7 +139,6 @@ function sleep(ms) {
 
 async function transceive(device, capdu) {
   let data = hexStringToByte(capdu);
-  let reshapedData = reshape(data);   // divide command into 16-byte chunks
   // send a command
   await device.controlTransferOut({
     requestType: 'vendor',
@@ -207,7 +206,6 @@ function sleep(ms) {
 
 async function transceive(device, capdu) {
   let data = hexStringToByte(capdu);
-  let reshapedData = reshape(data);   // divide command into 16-byte chunks
   // send a command
   await device.controlTransferOut({
     requestType: 'vendor',
