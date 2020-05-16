@@ -4,3 +4,6 @@
 [submodule "main/themes/timer"]
 	path = main/themes/timer
 	url = https://github.com/themefisher/timer-hugo.git
+[submodule "gauth"]
+	path = gauth
+	url = ./gauth/
