@@ -5,15 +5,13 @@ install:
   - sudo dpkg -i hugo_extended_0.60.1_Linux-64bit.deb
 script:
   - mkdir deploy
-  - cd doc
-  - hugo
-  - cd ..
-  - cp -fr doc/public deploy
-  - mv deploy/public deploy/doc
-  - cd main
-  - hugo
-  - cd ..
+  - cd doc; hugo; cd ..
+  - cp -fr doc/public deploy/doc
+  - cd main; hugo; cd ..
   - cp -fr main/public/* deploy
+  - cd gauth && npm i && ./node_modules/.bin/gulp tsc && cd ..
+  - mkdir deploy/oath
+  - cp gauth/{css,js,img,lib,index.html} deploy/oath
 deploy:
   provider: pages
   skip_cleanup: true
