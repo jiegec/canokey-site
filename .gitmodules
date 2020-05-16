@@ -6,4 +6,4 @@
 	url = https://github.com/themefisher/timer-hugo.git
 [submodule "gauth"]
 	path = gauth
-	url = ./gauth/
+	url = https://github.com/z4yx/gauth.git
