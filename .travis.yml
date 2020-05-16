@@ -14,7 +14,7 @@ script:
   - cp -fr main/public/* deploy
   - cd gauth && npm i && ./node_modules/.bin/gulp tsc && cd ..
   - mkdir deploy/oath
-  - cp gauth/{css,js,img,lib,index.html} deploy/oath
+  - cp -fr gauth/{css,js,img,lib,index.html} deploy/oath
 deploy:
   provider: pages
   skip_cleanup: true
