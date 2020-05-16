@@ -58,7 +58,7 @@ The following control pipe request is used to get the status of the card.
 | ------------- | -------- | ------ | ------ | ------- | ---- |
 | 11000001B     | STAT     | 0000h  | 1      | 0       | N/A  |
 
-The response data is 1-byte long, 1 for in progress and 0 for finish.
+The response data is 1-byte long, 0x01 for in progress and 0x00 for finishing processing and you can fetch the result using `RESP` command, and other values for invalid states.
 
 {{% notice note %}}
 If the command is still under processing, the response will be empty.
