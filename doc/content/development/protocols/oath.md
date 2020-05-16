@@ -147,7 +147,8 @@ Response will be a continual list of objects looking like:
 
 | Tag | Length             | Value |
 | --- | ------------------ | ----- |
-| 72h | Length of name + 1 | Byte 1: High 4 bits is type, low 4 bits is algorithm <br> Rest: Name |
+| 71h | Length of name     | Name |
+| 75h | 2                  | Byte 1: High 4 bits is type, low 4 bits is algorithm <br> Byte 2: Number of digits in OATH code |
 
 #### Response Code
 
